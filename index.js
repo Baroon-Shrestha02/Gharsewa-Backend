@@ -11,6 +11,7 @@ Database()
 
     app.listen(PORT, () => {
       console.log(`Server running on port ${PORT}`);
+      console.log("Swagger docs on http://localhost:3000/api-docs");
     });
   })
   .catch((err) => {

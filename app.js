@@ -6,6 +6,8 @@ const globalErrorHandler = require("./Middlewares/ErrorHandler");
 const authRoutes = require("./Routes/userRoutes");
 const cookieParser = require("cookie-parser");
 const { createAdminIfNotExists } = require("./Utils/CreateAdmin");
+const swaggerSpec = require("./Config/swagger");
+const swaggerUi = require("swagger-ui-express");
 
 const app = express();
 
@@ -34,6 +36,8 @@ app.use("/api/gharsewa", authRoutes);
 app.use("/api/gharsewa", (req, res) => {
   res.send("working..");
 });
+
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.use(globalErrorHandler);
 
