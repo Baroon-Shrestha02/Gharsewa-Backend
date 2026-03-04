@@ -5,7 +5,7 @@ const {
   getLoggedUser,
   logout,
 } = require("../Controllers/authController");
-const protect = require("../Middlewares/verifyuser");
+const protect = require("../Middlewares/verifyUser");//file path issue problem 
 const { restrictTo } = require("../Middlewares/restictAccess");
 const {
   getAllUser,
