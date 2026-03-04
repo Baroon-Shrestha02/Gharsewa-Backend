@@ -1,4 +1,4 @@
-const AppError = require("../Utils/AppError");
+const AppError = require("../Utils/appError");
 
 const restrictTo = (...roles) => {
   return (req, res, next) => {

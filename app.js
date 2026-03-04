@@ -4,10 +4,13 @@ const cors = require("cors");
 const Database = require("./Database/Database");
 const globalErrorHandler = require("./Middlewares/ErrorHandler");
 const authRoutes = require("./Routes/userRoutes");
+const workerRoutes=require("./Routes/workerRoutes")
+const staffRoutes=require('./Routes/staffRoutes')
 const cookieParser = require("cookie-parser");
 const { createAdminIfNotExists } = require("./Utils/CreateAdmin");
 const swaggerSpec = require("./Config/swagger");
 const swaggerUi = require("swagger-ui-express");
+
 
 const app = express();
 
@@ -31,7 +34,9 @@ app.use(express.json());
 // app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-app.use("/api/gharsewa", authRoutes);
+app.use("/api/users", authRoutes);
+app.use("/api/worker",workerRoutes);
+app.use("/api/staffs",staffRoutes)
 
 app.use("/api/gharsewa", (req, res) => {
   res.send("working..");
