@@ -37,7 +37,17 @@ const UserSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-
+    profImg: {
+      public_id: {
+        type: String,
+        default: "default_zwcp1h",
+      },
+      url: {
+        type: String,
+        default:
+          "https://res.cloudinary.com/dxu7hzo7w/image/upload/v1772623648/default_zwcp1h.jpg",
+      },
+    },
     role: {
       type: String,
       enum: ["user", "staff", "admin", "worker"],
@@ -53,6 +63,10 @@ const UserSchema = new mongoose.Schema(
       type: String,
       enum: ["pending", "rejected", "completed"],
       default: "pending",
+    },
+    activeStatus: {
+      type: Boolean,
+      default: true,
     },
   },
   { timestamps: true },

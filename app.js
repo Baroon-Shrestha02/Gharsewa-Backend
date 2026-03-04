@@ -10,11 +10,15 @@ const cookieParser = require("cookie-parser");
 const { createAdminIfNotExists } = require("./Utils/CreateAdmin");
 const swaggerSpec = require("./Config/swagger");
 const swaggerUi = require("swagger-ui-express");
+const fileUpload = require("express-fileupload");
+
+const authRoutes = require("./Routes/userRoutes");
+const jobRoutes = require("./Routes/jobRoutes");
 
 
 const app = express();
 
-const allowedOrigins = ["http://localhost:5173"];
+const allowedOrigins = ["http://localhost:5173", "http://localhost:3000"];
 
 app.use(
   cors({
@@ -31,9 +35,17 @@ app.use(
 );
 
 app.use(express.json());
-// app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true }));
+app.use(
+  fileUpload({
+    useTempFiles: true,
+    tempFileDir: "/tmp/",
+  }),
+);
 app.use(cookieParser());
 
+app.use("/api/gharsewa", authRoutes);
+app.use("/api/gharsewa", jobRoutes);
 app.use("/api/users", authRoutes);
 app.use("/api/worker",workerRoutes);
 app.use("/api/staffs",staffRoutes)
