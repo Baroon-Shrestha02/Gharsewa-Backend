@@ -1,12 +1,15 @@
-require("dotenv").config();
-const app = require("./app");
-const Database = require("./Database/Database");
-const createAdminIfNotExists = require("./Utils/CreateAdmin");
-const cloudinary = require("cloudinary").v2;
+import dotenv from "dotenv";
+dotenv.config();
 
-const PORT = process.env.PORT || 5000;
+import cloudinary from "cloudinary";
+import app from "./app.js";
 
-cloudinary.config({
+import Database from "./Database/Database.js";
+import createAdminIfNotExists from "./Utils/CreateAdmin.js";
+
+const PORT = process.env.PORT;
+
+cloudinary.v2.config({
   cloud_name: process.env.API_USER,
   api_key: process.env.API_KEY,
   api_secret: process.env.API_SECRET,
@@ -18,7 +21,7 @@ Database()
 
     app.listen(PORT, () => {
       console.log(`Server running on port ${PORT}`);
-      console.log(`Swagger docs: http://localhost:3000/api-docs`);
+      console.log(`Swagger docs: http://localhost:${PORT}/api-docs`);
     });
   })
   .catch((err) => {

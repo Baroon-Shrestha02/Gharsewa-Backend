@@ -1,4 +1,4 @@
-const cloudinary = require("cloudinary");
+import cloudinary from "cloudinary";
 
 const uploadImages = async (files) => {
   const allowedExtensions = [
@@ -43,4 +43,4 @@ const uploadImages = async (files) => {
   return isSingleFile ? uploadedFiles[0] : uploadedFiles;
 };
 
-module.exports = { uploadImages };
+export { uploadImages };

@@ -1,6 +1,9 @@
-const User = require("../../Models/userModel");
-const AppError = require("../../Utils/AppError");
-const asyncErrorHandler = require("../../Utils/AsyncErrorHandler");
+// import User from "../../src/Models/userModel.js";
+// import AppError from "../../Utils/appError.js";
+// import asyncErrorHandler from "../../Utils/asyncErrorHandler.js";
+import User from "../../Models/Usermodel.js";
+import AppError from "../../Utils/appError.js";
+import asyncErrorHandler from "../../Utils/asyncErrorHandler.js";
 
 const getAllUser = asyncErrorHandler(async (req, res, next) => {
   const users = await User.find().select("-password").sort("-createdAt");
@@ -49,4 +52,4 @@ const deleteInactiveUser = asyncErrorHandler(async (req, res, next) => {
   });
 });
 
-module.exports = { getAllUser, updateActiveStatus, deleteInactiveUser };
+export { getAllUser, updateActiveStatus, deleteInactiveUser };

@@ -1,16 +1,15 @@
-const express = require("express");
-const router = express.Router();
-
-const {
+import express from "express";
+import {
   createStaff,
   getAllStaff,
   getStaffById,
   updateStaff,
   deleteStaff,
-} = require("../Controllers/Users/staffController");
+} from "../Controllers/Users/staffController.js";
+import protect from "../Middlewares/verifyUser.js";
+import { restrictTo } from "../Middlewares/restictAccess.js";
 
-const protect  = require("../Middlewares/verifyUser");
-const { restrictTo } = require("../Middlewares/restictAccess");
+const router = express.Router();
 
 router.post("/", protect, restrictTo("admin"), createStaff);
 
@@ -22,4 +21,4 @@ router.patch("/:id", protect, restrictTo("admin", "staff"), updateStaff);
 
 router.delete("/:id", protect, restrictTo("admin"), deleteStaff);
 
-module.exports = router;
+export default router;

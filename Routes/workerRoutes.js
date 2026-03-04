@@ -1,16 +1,15 @@
-const express = require("express");
-const router = express.Router();
-
-const {
+import express from "express";
+import {
   createWorker,
   getAllWorkers,
   getWorkerById,
   updateWorker,
   deleteWorker,
-} = require("../Controllers/Users/workerController");
+} from "../Controllers/Users/workerController.js";
+import protect from "../Middlewares/verifyUser.js";
+import { restrictTo } from "../Middlewares/restictAccess.js";
 
-const protect = require("../Middlewares/verifyUser");
-const{ restrictTo }= require("../Middlewares/restictAccess");
+const router = express.Router();
 
 // Public routes
 router.get("/", getAllWorkers);
@@ -20,7 +19,6 @@ router.get("/:id", getWorkerById);
 router.post("/", protect, restrictTo("admin", "staff"), createWorker);
 
 // Update the Admin , staff and own worker .
-
 router.patch(
   "/:id",
   protect,
@@ -31,4 +29,4 @@ router.patch(
 // Admin only
 router.delete("/:id", protect, restrictTo("admin"), deleteWorker);
 
-module.exports = router;
+export default router;

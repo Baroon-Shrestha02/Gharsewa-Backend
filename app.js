@@ -1,20 +1,22 @@
-require("dotenv").config();
-const express = require("express");
-const cors = require("cors");
-const Database = require("./Database/Database");
-const globalErrorHandler = require("./Middlewares/ErrorHandler");
-const authRoutes = require("./Routes/userRoutes");
-const workerRoutes=require("./Routes/workerRoutes")
-const staffRoutes=require('./Routes/staffRoutes')
-const cookieParser = require("cookie-parser");
-const { createAdminIfNotExists } = require("./Utils/CreateAdmin");
-const swaggerSpec = require("./Config/swagger");
-const swaggerUi = require("swagger-ui-express");
-const fileUpload = require("express-fileupload");
+import dotenv from "dotenv";
+dotenv.config();
 
-const authRoutes = require("./Routes/userRoutes");
-const jobRoutes = require("./Routes/jobRoutes");
+import express from "express";
+import cors from "cors";
+import globalErrorHandler from "./Middlewares/errorHandler.js";
 
+import userRoutes from "./Routes/userRoutes.js";
+import authRoutes from "./Routes/authRoutes.js";
+
+import workerRoutes from "./Routes/workerRoutes.js";
+import staffRoutes from "./Routes/staffRoutes.js";
+import cookieParser from "cookie-parser";
+import createAdminIfNotExists from "./Utils/CreateAdmin.js";
+
+import swaggerUi from "swagger-ui-express";
+import fileUpload from "express-fileupload";
+import jobRoutes from "./Routes/jobRoutes.js";
+import swaggerSpec from "./Config/swagger.js";
 
 const app = express();
 
@@ -44,11 +46,12 @@ app.use(
 );
 app.use(cookieParser());
 
-app.use("/api/gharsewa", authRoutes);
-app.use("/api/gharsewa", jobRoutes);
-app.use("/api/users", authRoutes);
-app.use("/api/worker",workerRoutes);
-app.use("/api/staffs",staffRoutes)
+app.use("/api/auth", authRoutes);
+app.use("/api/users", userRoutes);
+app.use("/api/jobs", jobRoutes);
+
+app.use("/api/workers", workerRoutes);
+app.use("/api/staffs", staffRoutes);
 
 app.use("/api/gharsewa", (req, res) => {
   res.send("working..");
@@ -58,4 +61,4 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.use(globalErrorHandler);
 
-module.exports = app;
+export default app;

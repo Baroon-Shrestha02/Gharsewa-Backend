@@ -1,10 +1,12 @@
-const Worker = require("../../Models/wrokerModel");
-const AppError = require("../../Utils/AppError");
-const asyncErrorHandler = require("../../Utils/AsyncErrorHandler");
-
+// import Worker from "../../Models/wrokerModel.js";
+// import AppError from "../../Utils/appError.js";
+// import asyncErrorHandler from "../../Utils/asyncErrorHandler.js";
 // Create Worker (Admin or Staff only)
+import Worker from "../../Models/wrokerModel.js";
+import AppError from "../../Utils/appError.js";
+import asyncErrorHandler from "../../Utils/asyncErrorHandler.js";
 
-exports.createWorker = asyncErrorHandler(async (req, res, next) => {
+export const createWorker = asyncErrorHandler(async (req, res, next) => {
   const worker = await Worker.create(req.body);
 
   res.status(201).json({
@@ -15,7 +17,7 @@ exports.createWorker = asyncErrorHandler(async (req, res, next) => {
 
 //   Get All Active Workers (Public)
 
-exports.getAllWorkers = asyncErrorHandler(async (req, res, next) => {
+export const getAllWorkers = asyncErrorHandler(async (req, res, next) => {
   const workers = await Worker.find({
     isActive: true,
     KYC_status: "verified", // only verified workers visible
@@ -29,7 +31,7 @@ exports.getAllWorkers = asyncErrorHandler(async (req, res, next) => {
 });
 
 // Get singke worker
-exports.getWorkerById = asyncErrorHandler(async (req, res, next) => {
+export const getWorkerById = asyncErrorHandler(async (req, res, next) => {
   const worker = await Worker.findById(req.params.id);
 
   if (!worker || !worker.isActive) {
@@ -43,7 +45,7 @@ exports.getWorkerById = asyncErrorHandler(async (req, res, next) => {
 });
 
 // Update Worker (admin , staff and own worker )
-exports.updateWorker = asyncErrorHandler(async (req, res, next) => {
+export const updateWorker = asyncErrorHandler(async (req, res, next) => {
   const worker = await Worker.findById(req.params.id);
 
   if (!worker) {
@@ -74,7 +76,7 @@ exports.updateWorker = asyncErrorHandler(async (req, res, next) => {
 });
 
 // Delete worker (Admin Only )
-exports.deleteWorker = asyncErrorHandler(async (req, res, next) => {
+export const deleteWorker = asyncErrorHandler(async (req, res, next) => {
   const worker = await Worker.findByIdAndUpdate(
     req.params.id,
     { isActive: false },
