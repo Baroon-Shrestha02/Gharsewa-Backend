@@ -1,9 +1,9 @@
-const Job = require("../../Models/Job/jobModel");
-const Category = require("../../Models/Job/categoryModel");
-const asyncErrorHandler = require("../../Utils/AsyncErrorHandler");
-const AppError = require("../../Utils/AppError");
-const { uploadImages } = require("../../Utils/imageUploader");
-const cloudinary = require("cloudinary").v2;
+import Job from "../../Models/Job/jobModel.js";
+import Category from "../../Models/Job/categoryModel.js";
+import asyncErrorHandler from "../../Utils/asyncErrorHandler.js";
+import AppError from "../../Utils/appError.js";
+import { uploadImages } from "../../Utils/imageUploader.js";
+import cloudinary from "cloudinary";
 
 const createJob = asyncErrorHandler(async (req, res, next) => {
   const { name, category, wage, description, duration, location } = req.body;
@@ -71,7 +71,7 @@ const updateJob = asyncErrorHandler(async (req, res, next) => {
   if (req.files && req.files.image) {
     // delete old image from cloudinary
     if (job.image && job.image.public_id) {
-      await cloudinary.uploader.destroy(job.image.public_id);
+      await cloudinary.v2.uploader.destroy(job.image.public_id);
     }
 
     const uploadedImage = await uploadImages(req.files.image);
@@ -100,7 +100,7 @@ const deleteJob = asyncErrorHandler(async (req, res, next) => {
   if (!job) return next(new AppError("Job not found", 404));
 
   if (job.image && job.image.public_id) {
-    await cloudinary.uploader.destroy(job.image.public_id);
+    await cloudinary.v2.uploader.destroy(job.image.public_id);
   }
 
   await job.deleteOne();
@@ -111,4 +111,4 @@ const deleteJob = asyncErrorHandler(async (req, res, next) => {
   });
 });
 
-module.exports = { createJob, getAllJobs, deleteJob, updateJob };
+export { createJob, getAllJobs, deleteJob, updateJob };

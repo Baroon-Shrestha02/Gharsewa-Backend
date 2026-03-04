@@ -1,12 +1,12 @@
-const express = require("express");
-const { restrictTo } = require("../Middlewares/restictAccess");
-const {
+import express from "express";
+import { restrictTo } from "../Middlewares/restictAccess.js";
+import {
   createJob,
   getAllJobs,
   deleteJob,
   updateJob,
-} = require("../Controllers/Admins/admin.JobController");
-const protect = require("../Middlewares/verifyuser");
+} from "../Controllers/Admins/admin.JobController.js";
+import protect from "../Middlewares/verifyUser.js";
 
 const router = express.Router();
 
@@ -19,7 +19,7 @@ const router = express.Router();
 
 /**
  * @swagger
- * /api/gharsewa/add-job:
+ * /api/jobs/add-job:
  *   post:
  *     summary: Create a new job (Admin only)
  *     tags: [Jobs]
@@ -60,7 +60,7 @@ router.post("/add-job", protect, restrictTo("admin"), createJob);
 
 /**
  * @swagger
- * /api/gharsewa/get-jobs:
+ * /api/jobs/get-jobs:
  *   get:
  *     summary: Get all jobs
  *     tags: [Jobs]
@@ -87,7 +87,7 @@ router.get("/get-jobs", getAllJobs);
 
 /**
  * @swagger
- * /api/gharsewa/job/{id}/delete:
+ * /api/jobs/delete/:id:
  *   delete:
  *     summary: Delete a job by ID (Admin only)
  *     tags: [Jobs]
@@ -110,11 +110,11 @@ router.get("/get-jobs", getAllJobs);
  *       404:
  *         description: Job not found
  */
-router.delete("/job/:id/delete", protect, restrictTo("admin"), deleteJob);
+router.delete("/delete/:id", protect, restrictTo("admin"), deleteJob);
 
 /**
  * @swagger
- * /api/gharsewa/job/{id}/update:
+ * /api/jobs/update/:id:
  *   patch:
  *     summary: Update a job by ID (Admin only)
  *     tags: [Jobs]
@@ -158,6 +158,6 @@ router.delete("/job/:id/delete", protect, restrictTo("admin"), deleteJob);
  *       404:
  *         description: Job not found
  */
-router.patch("/job/:id/update", protect, restrictTo("admin"), updateJob);
+router.patch("/update/:id", protect, restrictTo("admin"), updateJob);
 
-module.exports = router;
+export default router;

@@ -1,10 +1,13 @@
-const bcrypt = require("bcrypt");
-const User = require("../../Models/userModel");
-const AppError = require("../../Utils/AppError");
-const asyncErrorHandler = require("../../Utils/AsyncErrorHandler");
+import bcrypt from "bcrypt";
 
+// import User from "../../src/Models/userModel.js";
+// import AppError from "../../../Utils/appError.js";
+// import asyncErrorHandler from "../../../Utils/asyncErrorHandler.js";
+import User from "../../Models/Usermodel.js";
+import AppError from "../../Utils/appError.js";
+import asyncErrorHandler from "../../Utils/asyncErrorHandler.js";
 // create admin(staff only)
-exports.createStaff = asyncErrorHandler(async (req, res, next) => {
+export const createStaff = asyncErrorHandler(async (req, res, next) => {
   const { firstname, lastname, phone, email, password } = req.body;
 
   if (!firstname || !lastname || !phone || !email || !password) {
@@ -36,7 +39,7 @@ exports.createStaff = asyncErrorHandler(async (req, res, next) => {
 });
 
 // get all staff
-exports.getAllStaff = asyncErrorHandler(async (req, res, next) => {
+export const getAllStaff = asyncErrorHandler(async (req, res, next) => {
   const staff = await User.find({
     role: "staff",
   }).select("-password");
@@ -49,7 +52,7 @@ exports.getAllStaff = asyncErrorHandler(async (req, res, next) => {
 });
 
 // get staff by id
-exports.getStaffById = asyncErrorHandler(async (req, res, next) => {
+export const getStaffById = asyncErrorHandler(async (req, res, next) => {
   const staff = await User.findById(req.params.id).select("-password");
 
   if (!staff || staff.role !== "staff") {
@@ -63,7 +66,7 @@ exports.getStaffById = asyncErrorHandler(async (req, res, next) => {
 });
 
 // update the staff (admin only)
-exports.updateStaff = asyncErrorHandler(async (req, res, next) => {
+export const updateStaff = asyncErrorHandler(async (req, res, next) => {
   const staff = await User.findById(req.params.id);
 
   if (!staff || staff.role !== "staff") {
@@ -85,7 +88,7 @@ exports.updateStaff = asyncErrorHandler(async (req, res, next) => {
 });
 
 // delete staff
-exports.deleteStaff = asyncErrorHandler(async (req, res, next) => {
+export const deleteStaff = asyncErrorHandler(async (req, res, next) => {
   const staff = await User.findByIdAndUpdate(
     req.params.id,
     {

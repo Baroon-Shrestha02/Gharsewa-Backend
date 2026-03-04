@@ -1,10 +1,14 @@
-const bcrypt = require("bcrypt");
-const AppError = require("../Utils/AppError");
-const asyncErrorHandler = require("../Utils/AsyncErrorHandler");
-const jwt = require("jsonwebtoken");
-const User = require("../Models/userModel");
+// import AppError from "../Utils/appError.js";
+// import errorHandler from "../Middlewares/errorHandler.js";
+// import User from "../Models/Usermodel.js";
 
-const registerUser = asyncErrorHandler(async (req, res, next) => {
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import AppError from "../Utils/appError.js";
+import asyncErrorHandler from "../Utils/asyncErrorHandler.js";
+import User from "../Models/Usermodel.js";
+
+export const registerUser = asyncErrorHandler(async (req, res, next) => {
   const { firstname, middlename, lastname, phone, email, password, role } =
     req.body;
 
@@ -40,7 +44,7 @@ const registerUser = asyncErrorHandler(async (req, res, next) => {
   });
 });
 
-const login = asyncErrorHandler(async (req, res, next) => {
+export const login = asyncErrorHandler(async (req, res, next) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
@@ -76,14 +80,14 @@ const login = asyncErrorHandler(async (req, res, next) => {
     });
 });
 
-const getLoggedUser = asyncErrorHandler(async (req, res, next) => {
+export const getLoggedUser = asyncErrorHandler(async (req, res, next) => {
   res.status(200).json({
     success: true,
     user: req.user,
   });
 });
 
-const logout = asyncErrorHandler(async (req, res, next) => {
+export const logout = asyncErrorHandler(async (req, res, next) => {
   res
     .clearCookie("token", {
       httpOnly: true,
@@ -97,4 +101,4 @@ const logout = asyncErrorHandler(async (req, res, next) => {
     });
 });
 
-module.exports = { registerUser, login, getLoggedUser, logout };
+// export { registerUser, login, getLoggedUser, logout };

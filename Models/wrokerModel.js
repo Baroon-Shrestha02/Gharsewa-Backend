@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const workerSchema = new mongoose.Schema(
   {
@@ -91,4 +91,4 @@ const workerSchema = new mongoose.Schema(
 
 const Worker = mongoose.model("Worker", workerSchema);
 
-module.exports = Worker;
+export default Worker;
