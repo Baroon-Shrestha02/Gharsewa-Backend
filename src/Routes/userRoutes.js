@@ -1,17 +1,16 @@
 import express from "express";
-// import {
-//   registerUser,
-//   login,
-//   getLoggedUser,
-//   logout,
-// } from "../Controllers/authController.js";
+
 import protect from "../Middlewares/verifyUser.js";
 import { restrictTo } from "../Middlewares/restictAccess.js";
 import {
   getAllUser,
   updateActiveStatus,
   deleteInactiveUser,
-} from "../Controllers/Admins/admin.UserController.js";
+} from "../Controllers/Roles/Admins/admin.UserController.js";
+import {
+  toggleActiveStatus,
+  updateProfile,
+} from "../Controllers/Roles/Users/userController.js";
 
 const router = express.Router();
 
@@ -33,39 +32,39 @@ const router = express.Router();
  */
 router.get("/all-users", protect, restrictTo("admin"), getAllUser);
 
-/**
- * @swagger
- * /api/users/toggle-status/{id}:
- *   patch:
- *     summary: Toggle user's active status (Admin only)
- *     tags: [Admin]
- *     security:
- *       - cookieAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *         description: User ID
- *     responses:
- *       200:
- *         description: User status updated successfully
- *       400:
- *         description: Bad request
- *       401:
- *         description: Unauthorized
- *       403:
- *         description: Forbidden - admin access required
- *       404:
- *         description: User not found
- */
-router.patch(
-  "/toggle-status/:id",
-  protect,
-  restrictTo("admin"),
-  updateActiveStatus,
-);
+// /**
+//  * @swagger
+//  * /api/users/toggle-status/{id}:
+//  *   patch:
+//  *     summary: Toggle user's active status (Admin only)
+//  *     tags: [Admin]
+//  *     security:
+//  *       - cookieAuth: []
+//  *     parameters:
+//  *       - in: path
+//  *         name: id
+//  *         required: true
+//  *         schema:
+//  *           type: string
+//  *         description: User ID
+//  *     responses:
+//  *       200:
+//  *         description: User status updated successfully
+//  *       400:
+//  *         description: Bad request
+//  *       401:
+//  *         description: Unauthorized
+//  *       403:
+//  *         description: Forbidden - admin access required
+//  *       404:
+//  *         description: User not found
+//  */
+// router.patch(
+//   "/toggle-status/:id",
+//   protect,
+//   restrictTo("admin"),
+//   updateActiveStatus,
+// );
 
 /**
  * @swagger
@@ -93,5 +92,8 @@ router.patch(
  *         description: User not found
  */
 router.delete("/delete/:id", protect, restrictTo("admin"), deleteInactiveUser);
+
+router.patch("/update-profile", protect, updateProfile);
+router.patch("/active-status", protect, toggleActiveStatus);
 
 export default router;

@@ -2,17 +2,16 @@ import dotenv from "dotenv";
 dotenv.config();
 
 import cloudinary from "cloudinary";
-import app from "./app.js";
-
-import Database from "./Database/Database.js";
-import createAdminIfNotExists from "./Utils/CreateAdmin.js";
+import app from "./src/app.js";
+import createAdminIfNotExists from "./src/Utils/CreateAdmin.js";
+import Database from "./src/Database/Database.js";
 
 const PORT = process.env.PORT;
 
 cloudinary.v2.config({
-  cloud_name: process.env.API_USER,
-  api_key: process.env.API_KEY,
-  api_secret: process.env.API_SECRET,
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
 Database()

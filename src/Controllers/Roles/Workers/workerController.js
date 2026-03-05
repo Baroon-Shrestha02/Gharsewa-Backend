@@ -1,10 +1,6 @@
-// import Worker from "../../Models/wrokerModel.js";
-// import AppError from "../../Utils/appError.js";
-// import asyncErrorHandler from "../../Utils/asyncErrorHandler.js";
-// Create Worker (Admin or Staff only)
-import Worker from "../../Models/wrokerModel.js";
-import AppError from "../../Utils/appError.js";
-import asyncErrorHandler from "../../Utils/asyncErrorHandler.js";
+import Worker from "../../../Models/wrokerModel.js";
+import AppError from "../../../Utils/appError.js";
+import asyncErrorHandler from "../../../Utils/asyncErrorHandler.js";
 
 export const createWorker = asyncErrorHandler(async (req, res, next) => {
   const worker = await Worker.create(req.body);

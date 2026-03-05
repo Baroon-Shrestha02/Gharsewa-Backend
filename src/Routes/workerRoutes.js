@@ -1,11 +1,11 @@
 import express from "express";
 import {
   createWorker,
+  deleteWorker,
   getAllWorkers,
   getWorkerById,
   updateWorker,
-  deleteWorker,
-} from "../Controllers/Users/workerController.js";
+} from "../Controllers/Roles/Workers/workerController.js";
 import protect from "../Middlewares/verifyUser.js";
 import { restrictTo } from "../Middlewares/restictAccess.js";
 
