@@ -55,10 +55,6 @@ app.use("/api/workers", workerRoutes);
 app.use("/api/staffs", staffRoutes);
 app.use("/api/booking", bookingRoutes);
 
-app.use("/", (req, res) => {
-  res.send("working..");
-});
-
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.use(globalErrorHandler);

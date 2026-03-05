@@ -30,6 +30,15 @@ const options = {
       },
     },
     security: [],
+    tags: [
+      { name: "Auth", description: "Authentication and session management" },
+      { name: "Admin", description: "Admin-only management operations" },
+      { name: "User", description: "User profile and account actions" },
+      { name: "Jobs", description: "Job creation and listing" },
+      { name: "Workers", description: "Worker directory and management" },
+      { name: "Staff", description: "Staff management operations" },
+      { name: "Booking", description: "Job booking and reservations" },
+    ],
   },
   apis: [path.join(__dirname, "../Routes/*.js")],
 };

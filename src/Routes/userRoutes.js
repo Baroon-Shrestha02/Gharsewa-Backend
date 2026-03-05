@@ -68,7 +68,7 @@ router.get("/all-users", protect, restrictTo("admin"), getAllUser);
 
 /**
  * @swagger
- * /api/users//delete/{id}:
+ * /api/users/delete/{id}:
  *   delete:
  *     summary: Delete inactive user (Admin only)
  *     tags: [Admin]
@@ -93,7 +93,56 @@ router.get("/all-users", protect, restrictTo("admin"), getAllUser);
  */
 router.delete("/delete/:id", protect, restrictTo("admin"), deleteInactiveUser);
 
+/**
+ * @swagger
+ * /api/users/update-profile:
+ *   patch:
+ *     summary: Update logged-in user's profile
+ *     tags: [User]
+ *     security:
+ *       - cookieAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               firstname:
+ *                 type: string
+ *               middlename:
+ *                 type: string
+ *               lastname:
+ *                 type: string
+ *               phone:
+ *                 type: number
+ *               email:
+ *                 type: string
+ *                 format: email
+ *     responses:
+ *       200:
+ *         description: Profile updated successfully
+ *       400:
+ *         description: Validation error
+ *       401:
+ *         description: Unauthorized
+ */
 router.patch("/update-profile", protect, updateProfile);
+
+/**
+ * @swagger
+ * /api/users/active-status:
+ *   patch:
+ *     summary: Toggle logged-in user's active status
+ *     tags: [User]
+ *     security:
+ *       - cookieAuth: []
+ *     responses:
+ *       200:
+ *         description: Active status updated successfully
+ *       401:
+ *         description: Unauthorized
+ */
 router.patch("/active-status", protect, toggleActiveStatus);
 
 export default router;

@@ -11,14 +11,115 @@ import { restrictTo } from "../Middlewares/restictAccess.js";
 
 const router = express.Router();
 
-// Public routes
+/**
+ * @swagger
+ * /api/workers:
+ *   get:
+ *     summary: Get all workers
+ *     tags: [Workers]
+ *     responses:
+ *       200:
+ *         description: List of workers
+ */
 router.get("/", getAllWorkers);
+
+/**
+ * @swagger
+ * /api/workers/{id}:
+ *   get:
+ *     summary: Get worker by ID
+ *     tags: [Workers]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Worker ID
+ *     responses:
+ *       200:
+ *         description: Worker details
+ *       404:
+ *         description: Worker not found
+ */
 router.get("/:id", getWorkerById);
 
-// Admin and Staff access only
+/**
+ * @swagger
+ * /api/workers:
+ *   post:
+ *     summary: Create a new worker
+ *     tags: [Workers]
+ *     security:
+ *       - cookieAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *               phone:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *                 format: email
+ *               job:
+ *                 type: string
+ *                 description: Related job ID
+ *     responses:
+ *       201:
+ *         description: Worker created successfully
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Forbidden - admin or staff access required
+ */
 router.post("/", protect, restrictTo("admin", "staff"), createWorker);
 
-// Update the Admin , staff and own worker .
+/**
+ * @swagger
+ * /api/workers/{id}:
+ *   patch:
+ *     summary: Update worker details
+ *     tags: [Workers]
+ *     security:
+ *       - cookieAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Worker ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *               phone:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *                 format: email
+ *               job:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Worker updated successfully
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Forbidden - admin, staff, or worker access required
+ *       404:
+ *         description: Worker not found
+ */
 router.patch(
   "/:id",
   protect,
@@ -26,7 +127,31 @@ router.patch(
   updateWorker,
 );
 
-// Admin only
+/**
+ * @swagger
+ * /api/workers/{id}:
+ *   delete:
+ *     summary: Delete a worker
+ *     tags: [Workers]
+ *     security:
+ *       - cookieAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Worker ID
+ *     responses:
+ *       200:
+ *         description: Worker deleted successfully
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Forbidden - admin access required
+ *       404:
+ *         description: Worker not found
+ */
 router.delete("/:id", protect, restrictTo("admin"), deleteWorker);
 
 export default router;
