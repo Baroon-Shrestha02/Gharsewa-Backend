@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const workerSchema = new mongoose.Schema(
   {
-    //link user account 
+    //link user account
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
@@ -86,7 +86,7 @@ const workerSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 const Worker = mongoose.model("Worker", workerSchema);

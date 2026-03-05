@@ -1,11 +1,8 @@
 import bcrypt from "bcrypt";
+import User from "../../../Models/Usermodel.js";
+import AppError from "../../../Utils/appError.js";
+import asyncErrorHandler from "../../../Utils/asyncErrorHandler.js";
 
-// import User from "../../src/Models/userModel.js";
-// import AppError from "../../../Utils/appError.js";
-// import asyncErrorHandler from "../../../Utils/asyncErrorHandler.js";
-import User from "../../Models/Usermodel.js";
-import AppError from "../../Utils/appError.js";
-import asyncErrorHandler from "../../Utils/asyncErrorHandler.js";
 // create admin(staff only)
 export const createStaff = asyncErrorHandler(async (req, res, next) => {
   const { firstname, lastname, phone, email, password } = req.body;
