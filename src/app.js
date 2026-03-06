@@ -2,16 +2,16 @@ import express from "express";
 import cors from "cors";
 import globalErrorHandler from "./middlewares/errorHandler.js";
 
-import userRoutes from "./Routes/userRoutes.js";
-import authRoutes from "./Routes/authRoutes.js";
-import workerRoutes from "./Routes/workerRoutes.js";
-import staffRoutes from "./Routes/staffRoutes.js";
-import bookingRoutes from "./Routes/bookingRoutes.js";
+import userRoutes from "./routes/userRoutes.js";
+import authRoutes from "./routes/authRoutes.js";
+import workerRoutes from "./routes/workerRoutes.js";
+import staffRoutes from "./routes/staffRoutes.js";
+import bookingRoutes from "./routes/bookingRoutes.js";
 
 import cookieParser from "cookie-parser";
 import swaggerUi from "swagger-ui-express";
 import fileUpload from "express-fileupload";
-import jobRoutes from "./Routes/jobRoutes.js";
+import jobRoutes from "./routes/jobRoutes.js";
 import swaggerSpec from "./config/swagger.js";
 
 const app = express();
