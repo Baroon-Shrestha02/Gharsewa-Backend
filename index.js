@@ -2,9 +2,9 @@ import dotenv from "dotenv";
 dotenv.config();
 
 import cloudinary from "cloudinary";
-import app from "./app.js";
-import createAdminIfNotExists from "./Utils/CreateAdmin.js";
-import Database from "./Database/Database.js";
+import Database from "./src/Database/Database.js";
+import app from "./src/app.js";
+import createAdminIfNotExists from "./src/Utils/CreateAdmin.js";
 
 const PORT = process.env.PORT;
 
