@@ -6,7 +6,7 @@ import Database from "./database/Database.js";
 import app from "./app.js";
 import createAdminIfNotExists from "./Utils/CreateAdmin.js";
 
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 3000;
 
 cloudinary.v2.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
