@@ -2,8 +2,8 @@ import express from "express";
 import {
   getBookings,
   jobBooking,
-} from "../Controllers/Roles/Users/user.BookingController.js";
-import protect from "../Middlewares/verifyUser.js";
+} from "../controllers/Roles/Users/user.BookingController.js";
+import protect from "../middlewares/verifyUser.js";
 
 const router = express.Router();
 

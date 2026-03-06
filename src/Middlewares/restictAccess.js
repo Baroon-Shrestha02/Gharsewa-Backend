@@ -1,4 +1,4 @@
-import AppError from "../Utils/appError.js";
+import AppError from "../utils/appError.js";
 
 const restrictTo = (...roles) => {
   return (req, res, next) => {

@@ -5,9 +5,9 @@ import {
   getAllWorkers,
   getWorkerById,
   updateWorker,
-} from "../Controllers/Roles/Workers/workerController.js";
-import protect from "../Middlewares/verifyUser.js";
-import { restrictTo } from "../Middlewares/restictAccess.js";
+} from "../controllers/Roles/Workers/workerController.js";
+import protect from "../middlewares/verifyUser.js";
+import { restrictTo } from "../middlewares/restictAccess.js";
 
 const router = express.Router();
 

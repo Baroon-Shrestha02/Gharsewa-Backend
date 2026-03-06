@@ -1,6 +1,6 @@
-import User from "../../../Models/Usermodel.js";
-import AppError from "../../../Utils/appError.js";
-import asyncErrorHandler from "../../../Utils/asyncErrorHandler.js";
+import User from "../../../models/Usermodel.js";
+import AppError from "../../../utils/appError.js";
+import asyncErrorHandler from "../../../utils/asyncErrorHandler.js";
 
 const getAllUser = asyncErrorHandler(async (req, res, next) => {
   const users = await User.find().select("-password").sort("-createdAt");

@@ -1,16 +1,16 @@
 import express from "express";
 
-import protect from "../Middlewares/verifyUser.js";
-import { restrictTo } from "../Middlewares/restictAccess.js";
+import protect from "../middlewares/verifyUser.js";
+import { restrictTo } from "../middlewares/restictAccess.js";
 import {
   getAllUser,
   updateActiveStatus,
   deleteInactiveUser,
-} from "../Controllers/Roles/Admins/admin.UserController.js";
+} from "../controllers/Roles/Admins/admin.UserController.js";
 import {
   toggleActiveStatus,
   updateProfile,
-} from "../Controllers/Roles/Users/userController.js";
+} from "../controllers/Roles/Users/userController.js";
 
 const router = express.Router();
 

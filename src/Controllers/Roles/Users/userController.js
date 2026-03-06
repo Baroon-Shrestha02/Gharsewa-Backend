@@ -1,8 +1,8 @@
 import cloudinary from "cloudinary";
-import User from "../../../Models/Usermodel.js";
-import asyncErrorHandler from "../../../Utils/asyncErrorHandler.js";
-import AppError from "../../../Utils/appError.js";
-import { uploadImages } from "../../../Utils/imageUploader.js";
+import User from "../../../models/Usermodel.js";
+import asyncErrorHandler from "../../../utils/asyncErrorHandler.js";
+import AppError from "../../../utils/appError.js";
+import { uploadImages } from "../../../utils/imageUploader.js";
 
 const updateProfile = asyncErrorHandler(async (req, res, next) => {
   const userId = req.user.id;

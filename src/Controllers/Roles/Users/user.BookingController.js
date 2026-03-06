@@ -1,8 +1,8 @@
-import Booking from "../../../Models/Job/bookingModel.js";
-import Job from "../../../Models/Job/jobModel.js";
-import User from "../../../Models/Usermodel.js";
-import AppError from "../../../Utils/appError.js";
-import asyncErrorHandler from "../../../Utils/asyncErrorHandler.js";
+import Booking from "../../../models/job/bookingModel.js";
+import Job from "../../../models/job/jobModel.js";
+import User from "../../../models/Usermodel.js";
+import AppError from "../../../utils/appError.js";
+import asyncErrorHandler from "../../../utils/asyncErrorHandler.js";
 
 export const jobBooking = asyncErrorHandler(async (req, res, next) => {
   const { id } = req.params;
