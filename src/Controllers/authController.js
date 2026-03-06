@@ -4,9 +4,9 @@
 
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import AppError from "../Utils/appError.js";
-import asyncErrorHandler from "../Utils/asyncErrorHandler.js";
-import User from "../Models/Usermodel.js";
+import AppError from "../utils/appError.js";
+import asyncErrorHandler from "../utils/asyncErrorHandler.js";
+import User from "../models/Usermodel.js";
 
 export const registerUser = asyncErrorHandler(async (req, res, next) => {
   const { firstname, middlename, lastname, phone, email, password, role } =

@@ -1,6 +1,6 @@
 import express from "express";
 import cors from "cors";
-import globalErrorHandler from "./Middlewares/errorHandler.js";
+import globalErrorHandler from "./middlewares/errorHandler.js";
 
 import userRoutes from "./Routes/userRoutes.js";
 import authRoutes from "./Routes/authRoutes.js";
@@ -12,7 +12,7 @@ import cookieParser from "cookie-parser";
 import swaggerUi from "swagger-ui-express";
 import fileUpload from "express-fileupload";
 import jobRoutes from "./Routes/jobRoutes.js";
-import swaggerSpec from "./Config/swagger.js";
+import swaggerSpec from "./config/swagger.js";
 
 const app = express();
 

@@ -1,12 +1,12 @@
 import express from "express";
-import { restrictTo } from "../Middlewares/restictAccess.js";
-import protect from "../Middlewares/verifyUser.js";
+import { restrictTo } from "../middlewares/restictAccess.js";
+import protect from "../middlewares/verifyUser.js";
 import {
   createJob,
   getAllJobs,
   deleteJob,
   updateJob,
-} from "../Controllers/Roles/Admins/admin.JobController.js";
+} from "../controllers/Roles/Admins/admin.JobController.js";
 
 const router = express.Router();
 

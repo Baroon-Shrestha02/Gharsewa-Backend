@@ -1,6 +1,6 @@
-import Worker from "../../../Models/wrokerModel.js";
-import AppError from "../../../Utils/appError.js";
-import asyncErrorHandler from "../../../Utils/asyncErrorHandler.js";
+import Worker from "../../../models/workerModel.js";
+import AppError from "../../../utils/appError.js";
+import asyncErrorHandler from "../../../utils/asyncErrorHandler.js";
 
 export const createWorker = asyncErrorHandler(async (req, res, next) => {
   const worker = await Worker.create(req.body);

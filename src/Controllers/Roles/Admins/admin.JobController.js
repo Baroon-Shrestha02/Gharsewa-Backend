@@ -1,8 +1,8 @@
-import Job from "../../../Models/Job/jobModel.js";
-import Category from "../../../Models/Job/categoryModel.js";
-import asyncErrorHandler from "../../../Utils/asyncErrorHandler.js";
-import AppError from "../../../Utils/appError.js";
-import { uploadImages } from "../../../Utils/imageUploader.js";
+import Job from "../../../models/job/jobModel.js";
+import Category from "../../../models/job/categoryModel.js";
+import asyncErrorHandler from "../../../utils/asyncErrorHandler.js";
+import AppError from "../../../utils/appError.js";
+import { uploadImages } from "../../../utils/imageUploader.js";
 import cloudinary from "cloudinary";
 
 const createJob = asyncErrorHandler(async (req, res, next) => {
