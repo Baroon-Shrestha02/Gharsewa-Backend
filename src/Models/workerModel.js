@@ -2,23 +2,10 @@ import mongoose from "mongoose";
 
 const workerSchema = new mongoose.Schema(
   {
-    //link user account
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
-      unique: true,
-    },
-
-    name: {
-      type: String,
-      required: [true, "Worker name is required"],
-      trim: true,
-    },
-
-    phone: {
-      type: String,
-      required: [true, "Phone number is required"],
       unique: true,
     },
 
@@ -69,9 +56,7 @@ const workerSchema = new mongoose.Schema(
       },
     },
 
-    profile_image: {
-      type: String, // store image URL
-    },
+    profile_image: String,
 
     KYC_status: {
       type: String,
@@ -89,6 +74,6 @@ const workerSchema = new mongoose.Schema(
   },
 );
 
-const Worker = mongoose.model("Worker", workerSchema);
+const Worker = mongoose.models.Worker || mongoose.model("Worker", workerSchema);
 
 export default Worker;
