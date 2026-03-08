@@ -12,6 +12,8 @@ import cookieParser from "cookie-parser";
 import swaggerUi from "swagger-ui-express";
 import fileUpload from "express-fileupload";
 import jobRoutes from "./routes/jobRoutes.js";
+import reviewRoutes from "./Routes/reviewRoutes.js";
+import notificationRoutes from "./Routes/notificationRoutes.js"
 import swaggerSpec from "./config/swagger.js";
 
 const app = express();
@@ -54,6 +56,8 @@ app.use("/api/jobs", jobRoutes);
 app.use("/api/workers", workerRoutes);
 app.use("/api/staffs", staffRoutes);
 app.use("/api/booking", bookingRoutes);
+app.use("/api/rating", reviewRoutes);
+app.use("/api/notification",notificationRoutes)
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
