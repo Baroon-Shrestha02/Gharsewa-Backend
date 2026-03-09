@@ -9,10 +9,12 @@ const UserSchema = new mongoose.Schema(
       maxlength: 15,
       trim: true,
     },
+
     middlename: {
       type: String,
       trim: true,
     },
+
     lastname: {
       type: String,
       required: true,
@@ -20,12 +22,14 @@ const UserSchema = new mongoose.Schema(
       maxlength: 20,
       trim: true,
     },
+
     phone: {
       type: String,
       required: true,
       unique: true,
       trim: true,
     },
+
     email: {
       type: String,
       required: true,
@@ -33,10 +37,12 @@ const UserSchema = new mongoose.Schema(
       lowercase: true,
       trim: true,
     },
+
     password: {
       type: String,
       required: true,
     },
+
     profImg: {
       public_id: {
         type: String,
@@ -48,6 +54,7 @@ const UserSchema = new mongoose.Schema(
           "https://res.cloudinary.com/dxu7hzo7w/image/upload/v1772623648/default_zwcp1h.jpg",
       },
     },
+
     role: {
       type: String,
       enum: ["user", "staff", "admin", "worker"],
@@ -64,15 +71,24 @@ const UserSchema = new mongoose.Schema(
       enum: ["pending", "rejected", "completed"],
       default: "pending",
     },
+
     activeStatus: {
       type: Boolean,
       default: true,
+    },
+
+    otp: String,
+
+    otpExpire: Date,
+
+    otpAttempts: {
+      type: Number,
+      default: 0,
     },
   },
   { timestamps: true },
 );
 
-// const User = mongoose.model("User", UserSchema);
 const User = mongoose.models.User || mongoose.model("User", UserSchema);
 
 export default User;

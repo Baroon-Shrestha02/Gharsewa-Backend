@@ -1,20 +1,19 @@
 import express from "express";
 import cors from "cors";
 import globalErrorHandler from "./middlewares/errorHandler.js";
+import swaggerSpec from "./config/swagger.js";
+import fileUpload from "express-fileupload";
+import cookieParser from "cookie-parser";
+import swaggerUi from "swagger-ui-express";
 
 import userRoutes from "./routes/userRoutes.js";
-import authRoutes from "./routes/authRoutes.js";
+import authRoutes from "./Routes/authRoutes.js";
 import workerRoutes from "./routes/workerRoutes.js";
 import staffRoutes from "./routes/staffRoutes.js";
 import bookingRoutes from "./routes/bookingRoutes.js";
-
-import cookieParser from "cookie-parser";
-import swaggerUi from "swagger-ui-express";
-import fileUpload from "express-fileupload";
 import jobRoutes from "./routes/jobRoutes.js";
 import reviewRoutes from "./Routes/reviewRoutes.js";
-import notificationRoutes from "./Routes/notificationRoutes.js"
-import swaggerSpec from "./config/swagger.js";
+import notificationRoutes from "./Routes/notificationRoutes.js";
 
 const app = express();
 
@@ -57,7 +56,7 @@ app.use("/api/workers", workerRoutes);
 app.use("/api/staffs", staffRoutes);
 app.use("/api/booking", bookingRoutes);
 app.use("/api/rating", reviewRoutes);
-app.use("/api/notification",notificationRoutes)
+app.use("/api/notification", notificationRoutes);
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
