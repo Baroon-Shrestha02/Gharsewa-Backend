@@ -1,10 +1,11 @@
 import express from "express";
 import {
-  createWorker,
   deleteWorker,
+  getActiveWorker,
   getAllWorkers,
   getWorkerById,
-  updateWorker,
+  updateActiveStatus,
+  updateWorkerProfile,
 } from "../controllers/Roles/Workers/workerController.js";
 import protect from "../middlewares/verifyUser.js";
 import { restrictTo } from "../middlewares/restictAccess.js";
@@ -22,6 +23,7 @@ const router = express.Router();
  *         description: List of workers
  */
 router.get("/", getAllWorkers);
+router.get("/active", getActiveWorker);
 
 /**
  * @swagger
@@ -43,41 +45,6 @@ router.get("/", getAllWorkers);
  *         description: Worker not found
  */
 router.get("/:id", getWorkerById);
-
-/**
- * @swagger
- * /api/workers:
- *   post:
- *     summary: Create a new worker
- *     tags: [Workers]
- *     security:
- *       - cookieAuth: []
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               name:
- *                 type: string
- *               phone:
- *                 type: string
- *               email:
- *                 type: string
- *                 format: email
- *               job:
- *                 type: string
- *                 description: Related job ID
- *     responses:
- *       201:
- *         description: Worker created successfully
- *       401:
- *         description: Unauthorized
- *       403:
- *         description: Forbidden - admin or staff access required
- */
-router.post("/", protect, restrictTo("admin", "staff"), createWorker);
 
 /**
  * @swagger
@@ -120,12 +87,7 @@ router.post("/", protect, restrictTo("admin", "staff"), createWorker);
  *       404:
  *         description: Worker not found
  */
-router.patch(
-  "/:id",
-  protect,
-  restrictTo("admin", "staff", "worker"),
-  updateWorker,
-);
+router.patch("/update/me", protect, restrictTo("worker"), updateWorkerProfile);
 
 /**
  * @swagger
@@ -152,6 +114,6 @@ router.patch(
  *       404:
  *         description: Worker not found
  */
-router.delete("/:id", protect, restrictTo("admin"), deleteWorker);
+router.patch("/updateStatus/me", protect, updateActiveStatus);
 
 export default router;

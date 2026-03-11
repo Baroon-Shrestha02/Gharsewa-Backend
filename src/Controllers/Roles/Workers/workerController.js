@@ -1,23 +1,32 @@
+import User from "../../../models/Usermodel.js";
 import Worker from "../../../models/workerModel.js";
 import AppError from "../../../utils/appError.js";
 import asyncErrorHandler from "../../../utils/asyncErrorHandler.js";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
-export const createWorker = asyncErrorHandler(async (req, res, next) => {
-  const worker = await Worker.create(req.body);
+//   Get All Active Workers (Public)
+export const getAllWorkers = asyncErrorHandler(async (req, res, next) => {
+  const workers = await User.find({
+    role: "worker",
+  })
+    .select("-password") // hide password
+    .sort({ createdAt: -1 });
 
-  res.status(201).json({
+  res.status(200).json({
     status: "success",
-    data: worker,
+    results: workers.length,
+    data: workers,
   });
 });
 
-//   Get All Active Workers (Public)
-
-export const getAllWorkers = asyncErrorHandler(async (req, res, next) => {
-  const workers = await Worker.find({
-    isActive: true,
-    KYC_status: "verified", // only verified workers visible
-  });
+export const getActiveWorker = asyncErrorHandler(async (req, res, next) => {
+  const workers = await User.find({
+    role: "worker",
+    activeStatus: true,
+  })
+    .select("-password") // hide password
+    .sort({ createdAt: -1 });
 
   res.status(200).json({
     status: "success",
@@ -28,9 +37,9 @@ export const getAllWorkers = asyncErrorHandler(async (req, res, next) => {
 
 // Get singke worker
 export const getWorkerById = asyncErrorHandler(async (req, res, next) => {
-  const worker = await Worker.findById(req.params.id);
+  const worker = await User.findById(req.params.id);
 
-  if (!worker || !worker.isActive) {
+  if (!worker || !worker.activeStatus) {
     return next(new AppError("Worker not found", 404));
   }
 
@@ -41,37 +50,52 @@ export const getWorkerById = asyncErrorHandler(async (req, res, next) => {
 });
 
 // Update Worker (admin , staff and own worker )
-export const updateWorker = asyncErrorHandler(async (req, res, next) => {
-  const worker = await Worker.findById(req.params.id);
+export const updateWorkerProfile = asyncErrorHandler(async (req, res, next) => {
+  const worker = await User.findById(req.user._id);
 
-  if (!worker) {
+  if (!worker || worker.role !== "worker") {
     return next(new AppError("Worker not found", 404));
   }
 
-  // If role is worker, allow update only own profile
-  if (
-    req.user.role === "worker" &&
-    worker.user?.toString() !== req.user._id.toString()
-  ) {
-    return next(new AppError("You can only update your own profile", 403));
+  // Allowed fields worker can update
+  const allowedFields = [
+    "firstname",
+    "middlename",
+    "lastname",
+    "phone",
+    "skill_type",
+    "experience_years",
+    "location",
+    "isAvailable",
+  ];
+
+  // update only allowed fields
+  allowedFields.forEach((field) => {
+    if (req.body[field] !== undefined) {
+      worker[field] = req.body[field];
+    }
+  });
+
+  // PROFILE IMAGE UPDATE
+  if (req.files && req.files.profImg) {
+    if (worker.profImg?.public_id) {
+      await cloudinary.v2.uploader.destroy(worker.profImg.public_id);
+    }
+
+    const uploadedImage = await uploadImages(req.files.profImg);
+    worker.profImg = uploadedImage;
   }
 
-  const updatedWorker = await Worker.findByIdAndUpdate(
-    req.params.id,
-    req.body,
-    {
-      new: true,
-      runValidators: true,
-    },
-  );
+  await worker.save();
 
   res.status(200).json({
     status: "success",
-    data: updatedWorker,
+    message: "Worker profile updated successfully",
+    data: worker,
   });
 });
 
-// Delete worker (Admin Only )
+// Delete worker (Admin Only ) -- left to update - worker should be able to make themsleves inactive and then admin can delete them
 export const deleteWorker = asyncErrorHandler(async (req, res, next) => {
   const worker = await Worker.findByIdAndUpdate(
     req.params.id,
@@ -88,3 +112,19 @@ export const deleteWorker = asyncErrorHandler(async (req, res, next) => {
     message: "Worker deleted successfully",
   });
 });
+
+export const updateActiveStatus = asyncErrorHandler(async (req, res, next) => {
+  const worker = await User.findById(req.user._id);
+  if (!worker) return next(new AppError("User not found", 404));
+
+  const newStatus = !worker.activeStatus;
+  worker.activeStatus = newStatus;
+  await worker.save();
+
+  res.send({
+    success: true,
+    isActive: newStatus,
+  });
+});
+
+export const getRequests = asyncErrorHandler(async (req, res, next) => {});

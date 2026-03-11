@@ -6,10 +6,32 @@ import { uploadImages } from "../../../utils/imageUploader.js";
 import cloudinary from "cloudinary";
 
 const createJob = asyncErrorHandler(async (req, res, next) => {
-  const { name, category, wage, description, duration, location } = req.body;
+  let {
+    name,
+    category,
+    subCategories,
+    wage,
+    description,
+    duration,
+    location,
+    workersNeeded,
+  } = req.body;
 
-  if (!name || !category || !wage || !description || !duration || !location) {
+  if (
+    !name ||
+    !category ||
+    !wage ||
+    !description ||
+    !duration ||
+    !location ||
+    !workersNeeded
+  ) {
     return next(new AppError("All fields are required", 400));
+  }
+
+  // convert string to array
+  if (subCategories && typeof subCategories === "string") {
+    subCategories = JSON.parse(subCategories);
   }
 
   let existingCategory = await Category.findOne({ name: category });
@@ -27,11 +49,13 @@ const createJob = asyncErrorHandler(async (req, res, next) => {
   const job = await Job.create({
     name,
     category: existingCategory._id,
+    subCategories,
     wage,
     description,
     duration,
     location,
     image: uploadedImage,
+    workersNeeded,
   });
 
   res.status(201).json({
@@ -53,7 +77,7 @@ const getAllJobs = asyncErrorHandler(async (req, res, next) => {
 const updateJob = asyncErrorHandler(async (req, res, next) => {
   const { id } = req.params;
 
-  const { name, category, wage, description, duration, location } =
+  let { name, category, subCategories, wage, description, duration, location } =
     req.body || {};
 
   let job = await Job.findById(id);
@@ -68,9 +92,19 @@ const updateJob = asyncErrorHandler(async (req, res, next) => {
     job.category = existingCategory._id;
   }
 
+  if (subCategories) {
+    if (typeof subCategories === "string") {
+      try {
+        subCategories = JSON.parse(subCategories);
+      } catch {
+        subCategories = [subCategories];
+      }
+    }
+    job.subCategories = subCategories;
+  }
+
   // Handle image update
   if (req.files && req.files.image) {
-    // delete old image from cloudinary
     if (job.image && job.image.public_id) {
       await cloudinary.v2.uploader.destroy(job.image.public_id);
     }
@@ -106,10 +140,21 @@ const deleteJob = asyncErrorHandler(async (req, res, next) => {
 
   await job.deleteOne();
 
-  res.json({
+  res.status(200).json({
     success: true,
     message: "Job deleted successfully",
   });
 });
 
-export { createJob, getAllJobs, deleteJob, updateJob };
+// <----- Apart from CRUD Operations------>
+
+const getCategories = asyncErrorHandler(async (req, res, next) => {
+  const cat = await Category.distinct("name");
+
+  res.status(200).json({
+    success: true,
+    cat,
+  });
+});
+
+export { createJob, getAllJobs, deleteJob, updateJob, getCategories };

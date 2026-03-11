@@ -1,7 +1,3 @@
-// import AppError from "../Utils/appError.js";
-// import errorHandler from "../Middlewares/errorHandler.js";
-// import User from "../Models/Usermodel.js";
-
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import AppError from "../utils/appError.js";
@@ -9,36 +5,65 @@ import asyncErrorHandler from "../utils/asyncErrorHandler.js";
 import User from "../models/Usermodel.js";
 
 export const registerUser = asyncErrorHandler(async (req, res, next) => {
-  const { firstname, middlename, lastname, phone, email, password, role } =
-    req.body;
+  const {
+    firstname,
+    middlename,
+    lastname,
+    phone,
+    email,
+    password,
+    role,
+    skill_type,
+    experience_years,
+  } = req.body;
 
   if (!firstname || !lastname || !phone || !email || !password) {
-    return next(new AppError("Please fill all the required fields.", 400));
+    return next(new AppError("Please fill all required fields.", 400));
   }
 
-  const existingUser = await User.findOne({ email });
+  // prevent admin creation from public API
+  const allowedRoles = ["user", "worker"];
+
+  const userRole = allowedRoles.includes(role) ? role : "user";
+
+  const existingUser = await User.findOne({
+    $or: [{ email }, { phone }],
+  });
+
   if (existingUser) {
-    return next(new AppError("User with this email already registered.", 400));
+    return next(new AppError("User already exists.", 400));
   }
 
-  const saltRounds = 10;
-  const hashedPassword = await bcrypt.hash(password, saltRounds);
+  const hashedPassword = await bcrypt.hash(password, 10);
 
-  const user = await User.create({
+  const newUserData = {
     firstname,
     middlename,
     lastname,
     phone,
     email,
     password: hashedPassword,
-    role,
-  });
+    role: userRole,
+  };
+
+  // worker specific fields
+  if (userRole === "worker") {
+    if (!skill_type) {
+      return next(new AppError("Worker must select a skill type.", 400));
+    }
+
+    newUserData.skill_type = skill_type;
+    newUserData.experience_years = experience_years || 0;
+  }
+
+  const user = await User.create(newUserData);
 
   res.status(201).json({
     status: "success",
-    message: "User registered successfully",
+    message: `${userRole} registered successfully`,
     data: {
       id: user._id,
+      role: user.role,
       email: user.email,
     },
   });
@@ -51,17 +76,26 @@ export const login = asyncErrorHandler(async (req, res, next) => {
     return next(new AppError("Email and password are required.", 400));
   }
 
-  const user = await User.findOne({ email });
+  // find user
+  const user = await User.findOne({ email }).select("+password");
 
-  if (!user) return next(new AppError("Invalid credentials.", 401));
+  if (!user) {
+    return next(new AppError("Invalid credentials.", 401));
+  }
 
+  // compare password
   const isMatch = await bcrypt.compare(password, user.password);
 
   if (!isMatch) {
     return next(new AppError("Invalid credentials.", 401));
   }
+
+  // create token
   const token = jwt.sign(
-    { id: user._id, role: user.role },
+    {
+      id: user._id,
+      role: user.role,
+    },
     process.env.JWT_SECRET,
     { expiresIn: "1d" },
   );
@@ -69,7 +103,7 @@ export const login = asyncErrorHandler(async (req, res, next) => {
   res
     .cookie("token", token, {
       httpOnly: true,
-      secure: false, // set true only in production with HTTPS
+      secure: false,
       sameSite: "Lax",
       maxAge: 24 * 60 * 60 * 1000,
     })
@@ -77,6 +111,7 @@ export const login = asyncErrorHandler(async (req, res, next) => {
     .json({
       status: "success",
       message: "Login successful",
+      role: user.role,
     });
 });
 

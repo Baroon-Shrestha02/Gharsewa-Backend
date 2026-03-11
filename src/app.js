@@ -7,14 +7,15 @@ import authRoutes from "./routes/authRoutes.js";
 import workerRoutes from "./routes/workerRoutes.js";
 import staffRoutes from "./routes/staffRoutes.js";
 import bookingRoutes from "./routes/bookingRoutes.js";
+import docRoutes from "./routes/kycRoutes.js";
 
 import cookieParser from "cookie-parser";
 import swaggerUi from "swagger-ui-express";
 import fileUpload from "express-fileupload";
 import jobRoutes from "./routes/jobRoutes.js";
 import reviewRoutes from "./Routes/reviewRoutes.js";
-import notificationRoutes from "./Routes/notificationRoutes.js"
-import swaggerSpec from "./config/swagger.js";
+import notificationRoutes from "./Routes/notificationRoutes.js";
+import swaggerSpec from "./Config/swagger.js";
 
 const app = express();
 
@@ -42,6 +43,7 @@ app.use(
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
 app.use(
   fileUpload({
     useTempFiles: true,
@@ -57,7 +59,8 @@ app.use("/api/workers", workerRoutes);
 app.use("/api/staffs", staffRoutes);
 app.use("/api/booking", bookingRoutes);
 app.use("/api/rating", reviewRoutes);
-app.use("/api/notification",notificationRoutes)
+app.use("/api/notification", notificationRoutes);
+app.use("/api/documents", docRoutes);
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
