@@ -1,9 +1,22 @@
 import express from "express";
+
+import protect from "../middlewares/verifyUser.js";
+import { restrictTo } from "../middlewares/restictAccess.js";
+
+import {
+  getAllBooking,
+  updateBooking,
+} from "../controllers/Roles/Staffs/staff.BookingControllers.js";
 import {
   getBookings,
   jobBooking,
+} from "../controllers/Roles/Workers/worker.BookingController.js";
+import { getAllWorkers } from "../controllers/Roles/Workers/workerController.js";
+import {
+  getOneWorkers,
+  getWorkers,
+  requestWorkerForJob,
 } from "../controllers/Roles/Users/user.BookingController.js";
-import protect from "../middlewares/verifyUser.js";
 
 const router = express.Router();
 
@@ -59,5 +72,21 @@ router.post("/book-job/:id", protect, jobBooking);
  *         description: Unauthorized
  */
 router.get("/job-bookings", protect, getBookings);
+
+router.get("/all", protect, restrictTo("admin", "staff"), getAllBooking);
+
+router.patch(
+  "/update-booking/:id",
+  protect,
+  restrictTo("admin", "staff"),
+  updateBooking,
+);
+
+// <---- user books worker ------->
+router.get("/workers", getWorkers);
+
+router.post("/:jobId/request-worker/:workerId", protect, requestWorkerForJob);
+
+router.get("/get/:workerId", protect, getOneWorkers);
 
 export default router;

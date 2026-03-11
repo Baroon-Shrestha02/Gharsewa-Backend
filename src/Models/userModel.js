@@ -57,19 +57,73 @@ const UserSchema = new mongoose.Schema(
 
     role: {
       type: String,
-      enum: ["user", "staff", "admin", "worker"],
+      enum: ["user", "worker", "staff", "admin"],
       default: "user",
+    },
+
+    // Worker specific fields
+    skill_type: {
+      type: String,
+      enum: [
+        "plumber",
+        "electrician",
+        "carpenter",
+        "painter",
+        "mechanic",
+        "cleaner",
+        "other",
+      ],
+    },
+
+    experience_years: {
+      type: Number,
+      min: 0,
+      default: 0,
+    },
+
+    rating: {
+      type: Number,
+      default: 0,
+      min: 0,
+      max: 5,
+    },
+
+    total_reviews: {
+      type: Number,
+      default: 0,
+    },
+
+    isAvailable: {
+      type: Boolean,
+      default: true,
+    },
+
+    location: {
+      address: String,
+      city: String,
+      state: String,
+      coordinates: {
+        lat: Number,
+        lng: Number,
+      },
+    },
+
+    kyc_document: [
+      {
+        public_id: String,
+        url: String,
+      },
+    ],
+
+    kycStatus: {
+      type: String,
+      enum: ["pending", "verified", "rejected"],
+      default: "pending",
     },
 
     isVerified: {
       type: Boolean,
       default: false,
-    },
-
-    kycStatus: {
-      type: String,
-      enum: ["pending", "rejected", "completed"],
-      default: "pending",
     },
 
     activeStatus: {

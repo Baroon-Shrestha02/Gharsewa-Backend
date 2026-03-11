@@ -2,6 +2,7 @@ import jwt from "jsonwebtoken";
 import AppError from "../utils/appError.js";
 import asyncErrorHandler from "../utils/asyncErrorHandler.js";
 import User from "../models/Usermodel.js";
+import Worker from "../models/workerModel.js";
 
 const protect = asyncErrorHandler(async (req, res, next) => {
   let token;
@@ -23,6 +24,7 @@ const protect = asyncErrorHandler(async (req, res, next) => {
 
   // 🔹 Get user from database
   const user = await User.findById(decoded.id).select("-password");
+  const worker = await Worker.findById(decoded.id).select("-password");
 
   if (!user) {
     return next(new AppError("User not found.", 404));

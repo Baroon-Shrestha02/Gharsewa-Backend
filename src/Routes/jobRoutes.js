@@ -6,7 +6,14 @@ import {
   getAllJobs,
   deleteJob,
   updateJob,
+  getCategories,
 } from "../controllers/Roles/Admins/admin.JobController.js";
+import {
+  deleteMyJob,
+  getMyJobs,
+  updateMyJob,
+  userCreateJob,
+} from "../controllers/Roles/Users/user.JobController.js";
 
 const router = express.Router();
 
@@ -56,7 +63,12 @@ const router = express.Router();
  *       403:
  *         description: Forbidden - admin access required
  */
-router.post("/add-job", protect, restrictTo("admin"), createJob);
+router.post(
+  "/add-job",
+  protect,
+  restrictTo("user", "admin", "staff"),
+  userCreateJob,
+);
 
 /**
  * @swagger
@@ -159,5 +171,22 @@ router.delete("/delete/:id", protect, restrictTo("admin"), deleteJob);
  *         description: Job not found
  */
 router.patch("/update/:id", protect, restrictTo("admin"), updateJob);
+
+router.get("/get-categories", getCategories);
+
+// <<<<------User CRUD for their jobs----->>>>
+router.post(
+  "/userJob",
+  protect,
+  restrictTo("admin", "staff", "user"),
+  userCreateJob,
+);
+
+router.get("/getmyjobs", protect, getMyJobs);
+
+// router.patch();
+router.delete("/delete-job/:id", protect, deleteMyJob);
+
+router.patch("/update-job/:id", protect, updateMyJob);
 
 export default router;

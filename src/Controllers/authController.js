@@ -8,29 +8,58 @@ import sendEmail from "../utils/sendEmail.js";
 
 // register
 export const registerUser = asyncErrorHandler(async (req, res, next) => {
-  const { firstname, middlename, lastname, phone, email, password, role } =
-    req.body;
+  const {
+    firstname,
+    middlename,
+    lastname,
+    phone,
+    email,
+    password,
+    role,
+    skill_type,
+    experience_years,
+  } = req.body;
 
   if (!firstname || !lastname || !phone || !email || !password) {
-    return next(new AppError("Please fill all the required fields.", 400));
+    return next(new AppError("Please fill all required fields.", 400));
   }
 
-  const existingUser = await User.findOne({ email });
+  // prevent admin creation from public API
+  const allowedRoles = ["user", "worker"];
+
+  const userRole = allowedRoles.includes(role) ? role : "user";
+
+  const existingUser = await User.findOne({
+    $or: [{ email }, { phone }],
+  });
+
   if (existingUser) {
-    return next(new AppError("User with this email already registered.", 400));
+    return next(new AppError("User already exists.", 400));
   }
 
   const hashedPassword = await bcrypt.hash(password, 10);
 
-  const user = await User.create({
+  const newUserData = {
     firstname,
     middlename,
     lastname,
     phone,
     email,
     password: hashedPassword,
-    role,
-  });
+    role: userRole,
+  };
+
+  // worker specific fields
+  if (userRole === "worker") {
+    if (!skill_type) {
+      return next(new AppError("Worker must select a skill type.", 400));
+    }
+
+    newUserData.skill_type = skill_type;
+    newUserData.experience_years = experience_years || 0;
+  }
+
+  const user = await User.create(newUserData);
 
   // Generate sign up otp
   const otp = generateOTP();
@@ -45,6 +74,7 @@ export const registerUser = asyncErrorHandler(async (req, res, next) => {
     message: "User registered successfully. OTP sent to email.",
     data: {
       id: user._id,
+      role: user.role,
       email: user.email,
     },
   });
@@ -79,9 +109,14 @@ export const login = asyncErrorHandler(async (req, res, next) => {
   if (!email || !password)
     return next(new AppError("Email and password are required.", 400));
 
-  const user = await User.findOne({ email });
-  if (!user) return next(new AppError("Invalid credentials", 401));
+  // find user
+  const user = await User.findOne({ email }).select("+password");
 
+  if (!user) {
+    return next(new AppError("Invalid credentials.", 401));
+  }
+
+  // compare password
   const isMatch = await bcrypt.compare(password, user.password);
   if (!isMatch) return next(new AppError("Invalid credentials", 401));
 
@@ -114,8 +149,16 @@ export const verifyOTP = asyncErrorHandler(async (req, res, next) => {
   user.otpExpire = undefined;
   await user.save();
 
+  if (!isMatch) {
+    return next(new AppError("Invalid credentials.", 401));
+  }
+
+  // create token
   const token = jwt.sign(
-    { id: user._id, role: user.role },
+    {
+      id: user._id,
+      role: user.role,
+    },
     process.env.JWT_SECRET,
     { expiresIn: "1d" },
   );
@@ -131,6 +174,7 @@ export const verifyOTP = asyncErrorHandler(async (req, res, next) => {
     .json({
       status: "success",
       message: "Login successful",
+      role: user.role,
     });
 });
 
