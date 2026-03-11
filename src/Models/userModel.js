@@ -130,6 +130,15 @@ const UserSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
+
+    otp: String,
+
+    otpExpire: Date,
+
+    otpAttempts: {
+      type: Number,
+      default: 0,
+    },
   },
   { timestamps: true },
 );

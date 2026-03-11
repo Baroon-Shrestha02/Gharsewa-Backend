@@ -3,7 +3,10 @@ import jwt from "jsonwebtoken";
 import AppError from "../utils/appError.js";
 import asyncErrorHandler from "../utils/asyncErrorHandler.js";
 import User from "../models/Usermodel.js";
+import generateOTP from "../utils/otpGenerate.js";
+import sendEmail from "../utils/sendEmail.js";
 
+// register
 export const registerUser = asyncErrorHandler(async (req, res, next) => {
   const {
     firstname,
@@ -58,9 +61,17 @@ export const registerUser = asyncErrorHandler(async (req, res, next) => {
 
   const user = await User.create(newUserData);
 
+  // Generate sign up otp
+  const otp = generateOTP();
+  user.otp = otp;
+  user.otpExpire = Date.now() + 5 * 60 * 1000;
+  await user.save();
+
+  await sendEmail(user.email, "Signup OTP Verification", `Your OTP is ${otp}`);
+
   res.status(201).json({
     status: "success",
-    message: `${userRole} registered successfully`,
+    message: "User registered successfully. OTP sent to email.",
     data: {
       id: user._id,
       role: user.role,
@@ -69,12 +80,34 @@ export const registerUser = asyncErrorHandler(async (req, res, next) => {
   });
 });
 
+// verify signup otp
+export const verifySignupOTP = asyncErrorHandler(async (req, res, next) => {
+  const { email, otp } = req.body;
+
+  const user = await User.findOne({ email });
+  if (!user) return next(new AppError("User not found", 404));
+
+  if (user.otp !== otp) return next(new AppError("Invalid OTP", 400));
+  if (Date.now() > user.otpExpire)
+    return next(new AppError("OTP expired", 400));
+
+  user.isVerified = true;
+  user.otp = undefined;
+  user.otpExpire = undefined;
+  await user.save();
+
+  res.status(200).json({
+    status: "success",
+    message: "Signup verified successfully",
+  });
+});
+
+// login to send otp
 export const login = asyncErrorHandler(async (req, res, next) => {
   const { email, password } = req.body;
 
-  if (!email || !password) {
+  if (!email || !password)
     return next(new AppError("Email and password are required.", 400));
-  }
 
   // find user
   const user = await User.findOne({ email }).select("+password");
@@ -85,6 +118,36 @@ export const login = asyncErrorHandler(async (req, res, next) => {
 
   // compare password
   const isMatch = await bcrypt.compare(password, user.password);
+  if (!isMatch) return next(new AppError("Invalid credentials", 401));
+
+  // genrate otp login
+  const otp = generateOTP();
+  user.otp = otp;
+  user.otpExpire = Date.now() + 5 * 60 * 1000;
+  await user.save();
+
+  await sendEmail(user.email, "Login OTP", `Your OTP is ${otp}`);
+
+  res.status(200).json({
+    status: "success",
+    message: "OTP sent to your email",
+  });
+});
+
+// verify login otp
+export const verifyOTP = asyncErrorHandler(async (req, res, next) => {
+  const { email, otp } = req.body;
+
+  const user = await User.findOne({ email });
+  if (!user) return next(new AppError("User not found", 404));
+
+  if (user.otp !== otp) return next(new AppError("Invalid OTP", 400));
+  if (Date.now() > user.otpExpire)
+    return next(new AppError("OTP expired", 400));
+
+  user.otp = undefined;
+  user.otpExpire = undefined;
+  await user.save();
 
   if (!isMatch) {
     return next(new AppError("Invalid credentials.", 401));
@@ -115,6 +178,50 @@ export const login = asyncErrorHandler(async (req, res, next) => {
     });
 });
 
+// forget password to send otp
+export const forgotPassword = asyncErrorHandler(async (req, res, next) => {
+  const { email } = req.body;
+
+  const user = await User.findOne({ email });
+  if (!user) return next(new AppError("User not found", 404));
+
+  const otp = generateOTP();
+  user.otp = otp;
+  user.otpExpire = Date.now() + 5 * 60 * 1000;
+  await user.save();
+
+  await sendEmail(user.email, "Reset Password OTP", `Your OTP is ${otp}`);
+
+  res.status(200).json({
+    status: "success",
+    message: "OTP sent to email",
+  });
+});
+
+// reset password
+export const resetPassword = asyncErrorHandler(async (req, res, next) => {
+  const { email, otp, newPassword } = req.body;
+
+  const user = await User.findOne({ email });
+  if (!user) return next(new AppError("User not found", 404));
+
+  if (user.otp !== otp) return next(new AppError("Invalid OTP", 400));
+  if (Date.now() > user.otpExpire)
+    return next(new AppError("OTP expired", 400));
+
+  const hashedPassword = await bcrypt.hash(newPassword, 10);
+  user.password = hashedPassword;
+  user.otp = undefined;
+  user.otpExpire = undefined;
+  await user.save();
+
+  res.status(200).json({
+    status: "success",
+    message: "Password reset successfully",
+  });
+});
+
+// get logged user
 export const getLoggedUser = asyncErrorHandler(async (req, res, next) => {
   res.status(200).json({
     success: true,
@@ -122,6 +229,7 @@ export const getLoggedUser = asyncErrorHandler(async (req, res, next) => {
   });
 });
 
+//logout
 export const logout = asyncErrorHandler(async (req, res, next) => {
   res
     .clearCookie("token", {
@@ -135,5 +243,3 @@ export const logout = asyncErrorHandler(async (req, res, next) => {
       message: "Logged out successfully",
     });
 });
-
-// export { registerUser, login, getLoggedUser, logout };
