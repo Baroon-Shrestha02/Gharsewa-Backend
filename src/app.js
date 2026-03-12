@@ -12,14 +12,6 @@ import workerRoutes from "./routes/workerRoutes.js";
 import staffRoutes from "./routes/staffRoutes.js";
 import bookingRoutes from "./routes/bookingRoutes.js";
 import docRoutes from "./routes/kycRoutes.js";
-
-import cookieParser from "cookie-parser";
-import swaggerUi from "swagger-ui-express";
-import fileUpload from "express-fileupload";
-import jobRoutes from "./routes/jobRoutes.js";
-import reviewRoutes from "./Routes/reviewRoutes.js";
-import notificationRoutes from "./Routes/notificationRoutes.js";
-import swaggerSpec from "./Config/swagger.js";
 import jobRoutes from "./routes/jobRoutes.js";
 import reviewRoutes from "./Routes/reviewRoutes.js";
 import notificationRoutes from "./Routes/notificationRoutes.js";
