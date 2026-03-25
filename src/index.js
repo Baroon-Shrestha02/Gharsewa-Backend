@@ -2,7 +2,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 import cloudinary from "cloudinary";
-import Database from "./database/Database.js";
+import Database from "./database/database.js";
 import app from "./app.js";
 import createAdminIfNotExists from "./Utils/CreateAdmin.js";
 
