@@ -24,6 +24,7 @@ export const getActiveWorker = asyncErrorHandler(async (req, res, next) => {
   const workers = await User.find({
     role: "worker",
     activeStatus: true,
+    kycStatus: "verified",
   })
     .select("-password") // hide password
     .sort({ createdAt: -1 });

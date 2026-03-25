@@ -149,10 +149,6 @@ export const verifyOTP = asyncErrorHandler(async (req, res, next) => {
   user.otpExpire = undefined;
   await user.save();
 
-  if (!isMatch) {
-    return next(new AppError("Invalid credentials.", 401));
-  }
-
   // create token
   const token = jwt.sign(
     {

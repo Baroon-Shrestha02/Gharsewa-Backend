@@ -23,6 +23,7 @@ const options = {
         description: "Hosted testing server",
       },
     ],
+
     components: {
       securitySchemes: {
         cookieAuth: {

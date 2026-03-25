@@ -17,18 +17,42 @@ export const getWorkers = asyncErrorHandler(async (req, res, next) => {
   });
 });
 
-// export const getWorkers = asyncErrorHandler(async (req, res, next) => {
-//   const workers = await Worker.find({ isActive: true }).populate(
-//     "user",
-//     "firstname lastname phone",
-//   );
+export const getSentWorkerRequests = asyncErrorHandler(
+  async (req, res, next) => {
+    const userId = req.user.id;
 
-//   res.status(200).json({
-//     success: true,
-//     results: workers.length,
-//     workers,
-//   });
-// });
+    const requests = await Booking.find({ user: userId })
+      .populate("worker", "firstname lastname phone email")
+      .populate("job", "name location workDate workTime wage")
+      .sort({ createdAt: -1 });
+
+    res.status(200).json({
+      success: true,
+      count: requests.length,
+      requests,
+    });
+  },
+);
+
+export const updateWorkerRequests = asyncErrorHandler(
+  async (req, res, next) => {},
+);
+
+// <<<<----workers send request for your job post---->>>>
+export const getWorkerRequests = asyncErrorHandler(async (req, res, next) => {
+  const workerId = req.user.id;
+
+  const requests = await Booking.find({ worker: workerId })
+    .populate("job", "name location workDate workTime wage")
+    .populate("user", "firstname lastname phone email")
+    .sort({ createdAt: -1 });
+
+  res.status(200).json({
+    success: true,
+    count: requests.length,
+    requests,
+  });
+});
 
 export const requestWorkerForJob = asyncErrorHandler(async (req, res, next) => {
   const { jobId, workerId } = req.params;
@@ -40,12 +64,10 @@ export const requestWorkerForJob = asyncErrorHandler(async (req, res, next) => {
     return next(new AppError("Job not found", 404));
   }
 
-  // const worker = await User.findById(workerId);
-
   const worker = await User.findOne({
     _id: workerId,
     role: "worker",
-    kycStaus: "verified",
+    kycStatus: "verified",
   }).select("firstname lastname phone email role");
 
   if (!worker || worker.role !== "worker") {
@@ -73,23 +95,5 @@ export const requestWorkerForJob = asyncErrorHandler(async (req, res, next) => {
     success: true,
     message: "Worker request sent",
     booking,
-  });
-});
-
-export const getOneWorkers = asyncErrorHandler(async (req, res, next) => {
-  const { workerId } = req.params;
-
-  const worker = await User.findOne({
-    _id: workerId,
-    role: "worker",
-  }).select("firstname lastname phone email role");
-
-  if (!worker) {
-    return next(new AppError("Worker not found", 404));
-  }
-
-  res.status(200).json({
-    success: true,
-    worker,
   });
 });

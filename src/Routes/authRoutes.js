@@ -54,6 +54,23 @@ router.post("/register", registerUser);
  *   post:
  *     summary: Verify signup OTP
  *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [email, otp]
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 example: test@gmail.com
+ *               otp:
+ *                 type: string
+ *                 example: "123456"
+ *     responses:
+ *       200:
+ *         description: Signup verified
  */
 router.post("/verify-signup-otp", verifySignupOTP);
 
@@ -63,6 +80,23 @@ router.post("/verify-signup-otp", verifySignupOTP);
  *   post:
  *     summary: Login user and send OTP
  *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [email, password]
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 example: test@gmail.com
+ *               password:
+ *                 type: string
+ *                 example: password123
+ *     responses:
+ *       200:
+ *         description: OTP sent
  */
 router.post("/login", login);
 
@@ -72,6 +106,23 @@ router.post("/login", login);
  *   post:
  *     summary: Verify login OTP and generate JWT
  *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [email, otp]
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 example: test@gmail.com
+ *               otp:
+ *                 type: string
+ *                 example: "123456"
+ *     responses:
+ *       200:
+ *         description: Login successful
  */
 router.post("/verify-login-otp", verifyOTP);
 
@@ -81,6 +132,20 @@ router.post("/verify-login-otp", verifyOTP);
  *   post:
  *     summary: Send OTP for password reset
  *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [email]
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 example: test@gmail.com
+ *     responses:
+ *       200:
+ *         description: OTP sent
  */
 router.post("/forgot-password", forgotPassword);
 
@@ -90,6 +155,26 @@ router.post("/forgot-password", forgotPassword);
  *   post:
  *     summary: Reset password using OTP
  *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [email, otp, newPassword]
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 example: test@gmail.com
+ *               otp:
+ *                 type: string
+ *                 example: "123456"
+ *               newPassword:
+ *                 type: string
+ *                 example: newpassword123
+ *     responses:
+ *       200:
+ *         description: Password reset successful
  */
 router.post("/reset-password", resetPassword);
 
@@ -101,6 +186,32 @@ router.post("/reset-password", resetPassword);
  *     tags: [Auth]
  *     security:
  *       - cookieAuth: []
+ *     responses:
+ *       200:
+ *         description: Successfully fetched logged in user
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 user:
+ *                   type: object
+ *                   properties:
+ *                     _id:
+ *                       type: string
+ *                     firstname:
+ *                       type: string
+ *                     lastname:
+ *                       type: string
+ *                     email:
+ *                       type: string
+ *                     role:
+ *                       type: string
+ *       401:
+ *         description: Unauthorized
  */
 router.get("/logged-user", protect, getLoggedUser);
 

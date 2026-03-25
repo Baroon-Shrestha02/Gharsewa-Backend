@@ -4,6 +4,7 @@ import asyncErrorHandler from "../../../utils/asyncErrorHandler.js";
 import AppError from "../../../utils/appError.js";
 import { uploadImages } from "../../../utils/imageUploader.js";
 
+// <<<<-----user updates their profile and active status---->>>>
 const updateProfile = asyncErrorHandler(async (req, res, next) => {
   const userId = req.user.id;
 

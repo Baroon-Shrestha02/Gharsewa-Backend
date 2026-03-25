@@ -5,6 +5,7 @@ import AppError from "../../../utils/appError.js";
 import asyncErrorHandler from "../../../utils/asyncErrorHandler.js";
 import { uploadImages } from "../../../utils/imageUploader.js";
 
+// <<<<-----User's Job related CRUD Operations---->>>>
 export const userCreateJob = asyncErrorHandler(async (req, res, next) => {
   let {
     name,

@@ -8,30 +8,31 @@ export const sendDoc = asyncErrorHandler(async (req, res, next) => {
 
   if (!user) return next(new AppError("User not found", 404));
 
-  if (user.activeStatus == "false") {
+  if (!user.activeStatus) {
     return next(
       new AppError("Your account is inactive. You cannot submit KYC.", 403),
     );
   }
 
-  if (user.isVerified == "true") {
+  if (user.isVerified) {
     return next(new AppError("Your account is already verified.", 403));
   }
 
-  if (!req.files || !req.files.kyc_document) {
-    return next(new AppError("You must upload at least one document", 400));
+  if (user.kycStatus === "pending") {
+    return next(new AppError("KYC already submitted and under review.", 400));
   }
 
-  const uploadedDocs = [];
+  if (!req.files?.kyc_document) {
+    return next(new AppError("You must upload at least one document", 400));
+  }
 
   const documents = Array.isArray(req.files.kyc_document)
     ? req.files.kyc_document
     : [req.files.kyc_document];
 
-  for (const doc of documents) {
-    const uploadedImage = await uploadImages(doc);
-    uploadedDocs.push(uploadedImage);
-  }
+  const uploadedDocs = await Promise.all(
+    documents.map((doc) => uploadImages(doc)),
+  );
 
   user.kyc_document = uploadedDocs;
   user.kycStatus = "pending";
