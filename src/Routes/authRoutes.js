@@ -9,8 +9,7 @@ import {
   forgotPassword,
   resetPassword,
 } from "../Controllers/authController.js";
-
-import protect from "../Middlewares/verifyUser.js";
+import protect from "../middlewares/verifyUser.js";
 
 const router = express.Router();
 
