@@ -2,6 +2,7 @@ import Booking from "../../../models/job/bookingModel.js";
 import AppError from "../../../utils/appError.js";
 import asyncErrorHandler from "../../../utils/asyncErrorHandler.js";
 
+// <<<----this might not be needed----->>>>
 export const getAllBooking = asyncErrorHandler(async (req, res, next) => {
   const findBookings = await Booking.find();
 

@@ -24,6 +24,7 @@ const router = express.Router();
  *   description: Job management
  */
 
+// <<<<----Job CRUD from admin is not required---->>>>
 /**
  * @swagger
  * /api/jobs/add-job:
@@ -68,6 +69,7 @@ router.post(
   protect,
   restrictTo("user", "admin", "staff"),
   userCreateJob,
+  // this one is okay but later might remove admin and staff from adding the job
 );
 
 /**
@@ -95,7 +97,7 @@ router.post(
  *       500:
  *         description: Server error
  */
-router.get("/get-jobs", getAllJobs);
+router.get("/get-jobs", getAllJobs); // this one is okay
 
 /**
  * @swagger
@@ -122,7 +124,7 @@ router.get("/get-jobs", getAllJobs);
  *       404:
  *         description: Job not found
  */
-router.delete("/delete/:id", protect, restrictTo("admin"), deleteJob);
+router.delete("/delete/:id", protect, restrictTo("admin"), deleteJob); // not admin, the user who posted the job can delete their job
 
 /**
  * @swagger
@@ -170,9 +172,9 @@ router.delete("/delete/:id", protect, restrictTo("admin"), deleteJob);
  *       404:
  *         description: Job not found
  */
-router.patch("/update/:id", protect, restrictTo("admin"), updateJob);
+router.patch("/update/:id", protect, restrictTo("admin"), updateJob); // not admin, only the respective user can update them
 
-router.get("/get-categories", getCategories);
+// <<<---for jobs---->>>>
 
 // <<<<------User CRUD for their jobs----->>>>
 router.post(
@@ -182,11 +184,176 @@ router.post(
   userCreateJob,
 );
 
+/**
+ * @swagger
+ * /api/jobs/get-categories:
+ *   get:
+ *     summary: Get all job categories
+ *     tags: [Jobs]
+ *     responses:
+ *       200:
+ *         description: List of categories
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 cat:
+ *                   type: array
+ *                   items:
+ *                     type: string
+ *                     example: Plumbing
+ *       500:
+ *         description: Server error
+ */
+router.get("/get-categories", getCategories);
+
+/**
+ * @swagger
+ * /api/jobs/getmyjobs:
+ *   get:
+ *     summary: Get jobs posted by logged-in user
+ *     tags: [Jobs]
+ *     security:
+ *       - cookieAuth: []
+ *     responses:
+ *       200:
+ *         description: List of user's jobs
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 count:
+ *                   type: number
+ *                 jobs:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       _id:
+ *                         type: string
+ *                       name:
+ *                         type: string
+ *                       category:
+ *                         type: string
+ *                       wage:
+ *                         type: number
+ *                       appliedWorkers:
+ *                         type: number
+ *                       workersNeeded:
+ *                         type: number
+ *       401:
+ *         description: Unauthorized
+ */
 router.get("/getmyjobs", protect, getMyJobs);
 
-// router.patch();
+/**
+ * @swagger
+ * /api/jobs/delete-job/{id}:
+ *   delete:
+ *     summary: Delete a job created by the logged-in user
+ *     tags: [Jobs]
+ *     security:
+ *       - cookieAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: Job ID
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Job deleted successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: success
+ *                 message:
+ *                   type: string
+ *                   example: Job deleted successfully
+ *       404:
+ *         description: Job not found or unauthorized
+ */
 router.delete("/delete-job/:id", protect, deleteMyJob);
 
+/**
+ * @swagger
+ * /api/jobs/update-job/{id}:
+ *   patch:
+ *     summary: Update a job created by the logged-in user
+ *     tags: [Jobs]
+ *     security:
+ *       - cookieAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: Job ID
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: false
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *               category:
+ *                 type: string
+ *               subCategories:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *               wage:
+ *                 type: number
+ *               description:
+ *                 type: string
+ *               duration:
+ *                 type: string
+ *               location:
+ *                 type: string
+ *               workDate:
+ *                 type: string
+ *                 format: date
+ *               workTime:
+ *                 type: string
+ *               workersNeeded:
+ *                 type: number
+ *               image:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                   format: binary
+ *     responses:
+ *       200:
+ *         description: Job updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 message:
+ *                   type: string
+ *                 job:
+ *                   type: object
+ *       404:
+ *         description: Job not found or unauthorized
+ */
 router.patch("/update-job/:id", protect, updateMyJob);
 
 export default router;

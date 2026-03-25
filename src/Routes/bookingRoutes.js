@@ -10,10 +10,13 @@ import {
 import {
   getBookings,
   jobBooking,
+  updateUserReq,
+  uReq,
 } from "../controllers/Roles/Workers/worker.BookingController.js";
 import { getAllWorkers } from "../controllers/Roles/Workers/workerController.js";
 import {
-  getOneWorkers,
+  getSentWorkerRequests,
+  getWorkerRequests,
   getWorkers,
   requestWorkerForJob,
 } from "../controllers/Roles/Users/user.BookingController.js";
@@ -55,13 +58,13 @@ const router = express.Router();
  *       401:
  *         description: Unauthorized
  */
-router.post("/book-job/:id", protect, jobBooking);
+router.post("/book-job/:id", protect, restrictTo("worker"), jobBooking);
 
 /**
  * @swagger
  * /api/booking/job-bookings:
  *   get:
- *     summary: Get bookings for the logged-in user
+ *     summary: Get bookings of the respective user
  *     tags: [Booking]
  *     security:
  *       - cookieAuth: []
@@ -73,6 +76,7 @@ router.post("/book-job/:id", protect, jobBooking);
  */
 router.get("/job-bookings", protect, getBookings);
 
+// <<<<---- all and update booking might not be required ---->>>
 router.get("/all", protect, restrictTo("admin", "staff"), getAllBooking);
 
 router.patch(
@@ -82,11 +86,17 @@ router.patch(
   updateBooking,
 );
 
+router.get("/sent-req", protect, getSentWorkerRequests);
+router.get("/worker-req", protect, getWorkerRequests);
+
 // <---- user books worker ------->
 router.get("/workers", getWorkers);
 
 router.post("/:jobId/request-worker/:workerId", protect, requestWorkerForJob);
 
-router.get("/get/:workerId", protect, getOneWorkers);
+// <<<<<-----user booking workers ------->>>>>
+router.get("/user-req", protect, uReq);
+
+router.patch("/update-req/:bookingId", protect, updateUserReq);
 
 export default router;
